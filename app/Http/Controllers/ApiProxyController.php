@@ -2,55 +2,79 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ActionEnum;
 use App\Http\Requests\GetNumberRequest;
 use App\Http\Requests\GetSmsRequest;
 use App\Http\Requests\CancelNumberRequest;
 use App\Http\Requests\GetStatusRequest;
-use Illuminate\Support\Facades\Http;
+use App\Services\ProxyService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class ApiProxyController extends Controller
 {
-    private $baseUrl = 'https://postback-sms.com/api/';
-    private $apiToken = '5994c91001f57eea808aff11738d752a';
-
-    public function getNumber(GetNumberRequest $request)
+    public function getNumber(GetNumberRequest $request): JsonResponse
     {
-        $response = Http::get($this->baseUrl, array_merge(
-            $request->validated(),
-            ['action' => 'getNumber', 'token' => $this->apiToken]
-        ));
+        try {
+            $response = ProxyService::send(ActionEnum::GET_NUMBER, $request->all());
 
-        return response()->json($response->json());
+            return response()->json($response->json());
+        } catch (\Throwable $e) {
+            Log::channel('proxy')->error($e->getFile() . PHP_EOL . $e->getLine() . PHP_EOL . $e->getMessage());
+
+            return response()->json(json_encode([
+                "code" => "error",
+                "message" => "Ошибка"
+            ]));
+        }
     }
 
-    public function getSms(GetSmsRequest $request)
+    public function getSms(GetSmsRequest $request): JsonResponse
     {
-        $response = Http::get($this->baseUrl, array_merge(
-            $request->validated(),
-            ['action' => 'getSms', 'token' => $this->apiToken]
-        ));
+        try {
+            $response = ProxyService::send(ActionEnum::GET_SMS, $request->all());
 
-        return response()->json($response->json());
+            return response()->json($response->json());
+        } catch (\Throwable $e) {
+            Log::channel('proxy')->error($e->getFile() . PHP_EOL . $e->getLine() . PHP_EOL . $e->getMessage());
+
+            return response()->json(json_encode([
+                "code" => "error",
+                "message" => "Ошибка"
+            ]));
+        }
     }
 
-    public function cancelNumber(CancelNumberRequest $request)
+    public function cancelNumber(CancelNumberRequest $request): JsonResponse
     {
-        $response = Http::get($this->baseUrl, array_merge(
-            $request->validated(),
-            ['action' => 'cancelNumber', 'token' => $this->apiToken]
-        ));
+        try {
+            $response = ProxyService::send(ActionEnum::CANCEL_NUMBER, $request->all());
 
-        return response()->json($response->json());
+            return response()->json($response->json());
+        } catch (\Throwable $e) {
+            Log::channel('proxy')->error($e->getFile() . PHP_EOL . $e->getLine() . PHP_EOL . $e->getMessage());
+
+            return response()->json(json_encode([
+                "code" => "error",
+                "message" => "Ошибка"
+            ]));
+        }
     }
 
-    public function getStatus(GetStatusRequest $request)
+    public function getStatus(GetStatusRequest $request): JsonResponse
     {
-        $response = Http::get($this->baseUrl, array_merge(
-            $request->validated(),
-            ['action' => 'getStatus', 'token' => $this->apiToken]
-        ));
+        try {
+            $response = ProxyService::send(ActionEnum::GET_STATUS, $request->all());
 
-        return response()->json($response->json());
+            return response()->json($response->json());
+        } catch (\Throwable $e) {
+            Log::channel('proxy')->error($e->getFile() . PHP_EOL . $e->getLine() . PHP_EOL . $e->getMessage());
+
+            return response()->json(json_encode([
+                "code" => "error",
+                "message" => "Ошибка"
+            ]));
+        }
     }
 }
 
