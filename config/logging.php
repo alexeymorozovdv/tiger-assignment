@@ -127,6 +127,11 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'proxy' => [
+            'driver' => 'daily',
+            'level' => 'info',
+            'path' => storage_path('logs/proxy.log'),
+        ],
     ],
 
 ];
