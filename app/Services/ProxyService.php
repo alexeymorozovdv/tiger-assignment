@@ -10,10 +10,13 @@ class ProxyService
 {
     public static function send(ActionEnum $action, array $data): Response
     {
-        $url = config('proxy.url');
-        $apiToken = config('proxy.token');
-        $params = array_merge($data, ['action' => $action->value, 'token' => $apiToken]);
+        $credentials = [
+            'action' => $action->value,
+            'token' => config('proxy.token')
+        ];
 
-        return Http::get($url, $params);
+        $params = array_merge($data, $credentials);
+
+        return Http::get(config('proxy.url'), $params);
     }
 }
